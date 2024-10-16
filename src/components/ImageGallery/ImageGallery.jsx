@@ -11,9 +11,10 @@ const ImageGallery = ({ images, onOpenModal }) => {
         <ul className={styles.galleryList}>
             {Array.isArray(images) && images.map((image) => {
                 return (
-                    <li onClick={() => onOpenModal(image.urls.regular)} key={nanoid()}>
+                    <li key={nanoid()}>
                         <ImageCard 
                             urlImg={image.urls.small}
+                            onClick={() => onOpenModal(image.urls.regular)}
                         />
 	                </li>
                 )
