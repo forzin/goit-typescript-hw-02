@@ -8,19 +8,13 @@ export interface Image {
   }
 }
 
-interface Subject {
-  id: string;
-  urls: {
-    regular: string;
-    small: string;
-  }
-}
-
 export interface ImageResults {
-  results: Subject[];
-  total: number;
-  total_pages: number;
-  error: string;
+  data: {
+    results: [];
+    total: number;
+    total_pages: number;
+    error: string;
+  }
 }
 
 

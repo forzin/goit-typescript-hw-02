@@ -49,10 +49,10 @@ function App() {
   useEffect(() => {
     if (searchTerms === null) return;
 
-    const fetchImages = async (): Promise<ImageResults> => { 
+    const fetchImages = async () => { 
       try {
         setLoading(true);
-        const { data } = await axios.get('https://api.unsplash.com/search/photos/', {
+        const { data }: ImageResults = await axios.get('https://api.unsplash.com/search/photos/', {
           params: {
             client_id: 'rmxf8kurd-jZq5uMv4ZOr1LrevnlTERgZJhwAEEmQP4',
             query: searchTerms,
@@ -65,10 +65,8 @@ function App() {
         {data.total === 0 && setMessage(true)};
         { data.total > 20 ? setloadMore(true) : setloadMore(false) };
         
-        return data;
       } catch (error) {
         setError(true);
-        return { results: [], total: 0, total_pages: 0, error: `${error}` }; 
       } finally {
         setLoading(false);
       }
