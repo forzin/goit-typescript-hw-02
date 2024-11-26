@@ -10,37 +10,38 @@ import axios from 'axios';
 
 import { Toaster } from 'react-hot-toast';
 import { useEffect, useState } from 'react'
+import { Image, ImageResults } from './DefaultTypes'
 
 import './App.css'
 
 function App() {
-  
-  const [images, setImages] = useState(null);
-  const [searchTerms, setsearchTerms] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [loadMore, setloadMore] = useState(false);
-  const [message, setMessage] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalImg, setModalImg] = useState(null);
-  const [pages, setPages] = useState(1);
 
-  const onAddSearchParams = (searchparam) => {
+  const [images, setImages] = useState<Image[]>([]);
+  const [searchTerms, setsearchTerms] = useState<string | null>(null);
+  const [error, setError] = useState<boolean | null>(null);
+  const [modalImg, setModalImg] = useState<string | null >(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [loadMore, setloadMore] = useState<boolean>(false);
+  const [message, setMessage] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [pages, setPages] = useState<number>(1);
+
+  const onAddSearchParams = (searchparam: string): void => {
     setsearchTerms(searchparam);
-    setImages(null);
+    setImages([]);
     setMessage(false)
   }
 
-  const loadMoreBtn = () => {
+  const loadMoreBtn = (): void => {
     setPages(prevPages => prevPages + 1);
   }
 
-  const onOpenModal = (imgUrl) => {
+  const onOpenModal = (imgUrl: string): void => {
     setModalImg(imgUrl);
     setIsModalOpen(true);
   }
 
-  const onCloseModal = () => {
+  const onCloseModal = (): void => {
     setIsModalOpen(false);
     setModalImg(null);
   }
@@ -48,7 +49,7 @@ function App() {
   useEffect(() => {
     if (searchTerms === null) return;
 
-    const fetchImages = async () => { 
+    const fetchImages = async (): Promise<ImageResults> => { 
       try {
         setLoading(true);
         const { data } = await axios.get('https://api.unsplash.com/search/photos/', {
@@ -62,10 +63,12 @@ function App() {
 
         setImages(prevImage => pages === 1 ? data.results : [...prevImage, ...data.results]);
         {data.total === 0 && setMessage(true)};
-        {data.total > 20 ? setloadMore(true) : setloadMore(false)};
-
+        { data.total > 20 ? setloadMore(true) : setloadMore(false) };
+        
+        return data;
       } catch (error) {
         setError(true);
+        return { results: [], total: 0, total_pages: 0, error: `${error}` }; 
       } finally {
         setLoading(false);
       }
@@ -95,11 +98,9 @@ function App() {
         (<ImageGallery
           images={images}
           onOpenModal={onOpenModal}
-          onCloseModal={onCloseModal}
       />)}
       {loading && <Loader />}
       {loadMore && <LoadMoreBtn loadMoreBtn={loadMoreBtn}/>}
-      <ImageModal/>
       <Toaster />
       <ImageModal 
         modalImg={modalImg}

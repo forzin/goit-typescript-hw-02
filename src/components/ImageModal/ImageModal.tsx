@@ -3,7 +3,13 @@ import styles from './ImageModal.module.css'
 
 Modal.setAppElement('#root');
 
-const ImageModal = ({ modalImg, isModalOpen, onCloseModal }) => {
+interface ImageModalProps {
+    modalImg: string | null;
+    isModalOpen: boolean;
+    onCloseModal: () => void;
+}
+
+const ImageModal: React.FC<ImageModalProps> = ({ modalImg, isModalOpen, onCloseModal }) => {
     return (
         <Modal 
            isOpen={isModalOpen} 
@@ -12,7 +18,7 @@ const ImageModal = ({ modalImg, isModalOpen, onCloseModal }) => {
            overlayClassName={styles.modalOverlay}
            shouldCloseOnOverlayClick={true}
         >
-            <img className={styles.imgModal} src={modalImg} alt="Enlarged" />
+            {modalImg && <img className={styles.imgModal} src={modalImg} alt="Enlarged" />}
         </Modal>
     )
 }
